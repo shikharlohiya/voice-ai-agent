@@ -11,7 +11,7 @@ load_dotenv()
 # --- 1. AGENT PERSONA & PROMPTS ---
 # The main instructions for the AI. Defines who it is and how it behaves.
 SYSTEM_PROMPT = """
-You are a helpful and polite School Receptionist at "Rapid X High School".
+You are a helpful and polite School Receptionist at "Neeraj Public School".
 
 **Your Goal:** Answer questions from parents about admissions, fees, and timings.
 
@@ -35,15 +35,14 @@ fallback_greeting = "Greet the user immediately."
 # --- 2. SPEECH-TO-TEXT (STT) SETTINGS ---
 # We use Deepgram for high-speed transcription.
 STT_PROVIDER = "deepgram"
-STT_MODEL = "nova-2"  # Recommended: "nova-2" (balanced) or "nova-3" (newest)
-STT_LANGUAGE = "en"
+STT_MODEL = "nova-3"  # nova-3 has better multi-language support than nova-2
+STT_LANGUAGE = "hi"   # Hindi primary — also picks up English/Hinglish words
 
 
 # --- 3. TEXT-TO-SPEECH (TTS) SETTINGS ---
 # Choose your voice provider: "openai", "sarvam" (Indian voices), or "cartesia" (Ultra-fast)
-# DEFAULT_TTS_PROVIDER = "sarvam"   # Sarvam has compatibility issue with current plugin
-DEFAULT_TTS_PROVIDER = "deepgram"   # Deepgram works, can speak Hindi text
-DEFAULT_TTS_VOICE = "aura-asteria-en"
+DEFAULT_TTS_PROVIDER = "sarvam"
+DEFAULT_TTS_VOICE = "anushka"       # Sarvam: anushka (female), aravind (male)
 
 # Sarvam AI Specifics (for Indian Context)
 SARVAM_MODEL = "bulbul:v2"
@@ -56,7 +55,7 @@ CARTESIA_VOICE = "f786b574-daa5-4673-aa0c-cbe3e8534c02"
 
 # --- 4. LARGE LANGUAGE MODEL (LLM) SETTINGS ---
 # Choose "openai" or "groq"
-DEFAULT_LLM_PROVIDER = "openai"
+DEFAULT_LLM_PROVIDER = "groq"
 DEFAULT_LLM_MODEL = "gpt-4o-mini" # OpenAI default
 
 # Groq Specifics (Faster inference)
