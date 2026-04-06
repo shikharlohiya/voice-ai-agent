@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Car Inquiries — Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #e63946, #c1121f);
+      color: white;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .header h1 { font-size: 20px; font-weight: 700; }
+    .header p { font-size: 13px; opacity: 0.85; }
+    .header-right { font-size: 13px; opacity: 0.9; text-align: right; }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      gap: 16px;
+      padding: 24px 32px 0;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px 24px;
+      flex: 1;
+      min-width: 150px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+    .stat-card .num { font-size: 28px; font-weight: 700; color: #e63946; }
+    .stat-card .label { font-size: 12px; color: #888; margin-top: 4px; }
+
+    /* MAIN */
+    .main { padding: 20px 32px 40px; }
+
+    /* FILTERS */
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .toolbar input, .toolbar select {
+      padding: 9px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      background: white;
+    }
+    .toolbar input { flex: 1; min-width: 200px; }
+    .refresh-btn {
+      padding: 9px 18px;
+      background: #e63946;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .refresh-btn:hover { background: #c1121f; }
+
+    /* TABLE */
+    .table-wrap {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #f8f8f8; }
+    th {
+      padding: 13px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #eee;
+    }
+    td {
+      padding: 13px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid #f3f3f3;
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; cursor: pointer; }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge.not_called  { background: #fff3cd; color: #856404; }
+    .badge.calling     { background: #cce5ff; color: #004085; }
+    .badge.called      { background: #d4edda; color: #155724; }
+    .badge.failed      { background: #f8d7da; color: #721c24; }
+    .badge.no_answer   { background: #e2e3e5; color: #383d41; }
+
+    .cat-badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #f0f2f5;
+      color: #555;
+    }
+
+    /* EMPTY */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+    }
+    .empty .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty p { font-size: 14px; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      margin: 16px;
+    }
+    .modal-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .modal-header h2 { font-size: 17px; color: #222; }
+    .modal-header p { font-size: 12px; color: #999; margin-top: 3px; }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #999;
+      line-height: 1;
+    }
+    .close-btn:hover { color: #333; }
+    .modal-body { padding: 20px 24px; }
+    .detail-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .detail-label {
+      font-weight: 600;
+      color: #555;
+      min-width: 120px;
+    }
+    .detail-value { color: #333; }
+    .summary-box {
+      background: #f8f9fa;
+      border-left: 3px solid #e63946;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #444;
+      margin-top: 16px;
+    }
+    .summary-box .summary-title {
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #e63946;
+      margin-bottom: 8px;
+    }
+    .no-summary {
+      text-align: center;
+      color: #aaa;
+      font-size: 13px;
+      padding: 20px 0;
+    }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .header, .stats, .main { padding-left: 16px; padding-right: 16px; }
+      .stats { gap: 10px; }
+      th:nth-child(4), td:nth-child(4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>🚗 Car Inquiries Dashboard</h1>
+    <p>All customer inquiries & AI call status</p>
+  </div>
+  <div class="header-right" id="lastUpdated">Loading...</div>
+</div>
+
+<!-- STATS -->
+<div class="stats" id="stats">
+  <div class="stat-card"><div class="num" id="s-total">—</div><div class="label">Total Inquiries</div></div>
+  <div class="stat-card"><div class="num" id="s-called" style="color:#28a745">—</div><div class="label">Called</div></div>
+  <div class="stat-card"><div class="num" id="s-pending" style="color:#ffc107">—</div><div class="label">Pending</div></div>
+  <div class="stat-card"><div class="num" id="s-failed" style="color:#dc3545">—</div><div class="label">Failed</div></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="🔍  Search by name, phone, city..." oninput="filterTable()"/>
+    <select id="statusFilter" onchange="filterTable()">
+      <option value="">All Status</option>
+      <option value="not_called">Not Called</option>
+      <option value="calling">Calling</option>
+      <option value="called">Called</option>
+      <option value="failed">Failed</option>
+    </select>
+    <select id="categoryFilter" onchange="filterTable()">
+      <option value="">All Categories</option>
+      <option value="New Car Inquiry">New Car Inquiry</option>
+      <option value="Test Drive">Test Drive</option>
+      <option value="Car Service">Car Service</option>
+      <option value="Finance">Finance</option>
+      <option value="Exchange">Exchange</option>
+    </select>
+    <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+  </div>
+
+  <div class="table-wrap">
+    <div class="loading" id="loadingMsg">Loading inquiries...</div>
+    <table id="dataTable" style="display:none">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Category</th>
+          <th>City</th>
+          <th>AI Call Status</th>
+          <th>Called At</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty" id="emptyMsg" style="display:none">
+      <div class="icon">📋</div>
+      <p>No inquiries found.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalName">—</h2>
+        <p id="modalSub">—</p>
+      </div>
+      <button class="close-btn" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+  let allData = [];
+
+  async function loadData() {
+    try {
+      const resp = await fetch("/api/inquiries");
+      const json = await resp.json();
+      allData = json.data || [];
+      updateStats(allData);
+      filterTable();
+      document.getElementById("lastUpdated").textContent = "Updated: " + new Date().toLocaleTimeString();
+    } catch (e) {
+      document.getElementById("loadingMsg").textContent = "Failed to load data.";
+    }
+  }
+
+  function updateStats(data) {
+    document.getElementById("s-total").textContent = data.length;
+    document.getElementById("s-called").textContent = data.filter(d => d.ai_call_status === "called").length;
+    document.getElementById("s-pending").textContent = data.filter(d => d.ai_call_status === "not_called").length;
+    document.getElementById("s-failed").textContent = data.filter(d => d.ai_call_status === "failed").length;
+  }
+
+  function filterTable() {
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    const status = document.getElementById("statusFilter").value;
+    const category = document.getElementById("categoryFilter").value;
+
+    const filtered = allData.filter(d => {
+      const matchSearch = !search ||
+        (d.name || "").toLowerCase().includes(search) ||
+        (d.phone || "").includes(search) ||
+        (d.city_name || "").toLowerCase().includes(search);
+      const matchStatus = !status || d.ai_call_status === status;
+      const matchCategory = !category || d.category === category;
+      return matchSearch && matchStatus && matchCategory;
+    });
+
+    renderTable(filtered);
+  }
+
+  function renderTable(data) {
+    const loading = document.getElementById("loadingMsg");
+    const table = document.getElementById("dataTable");
+    const empty = document.getElementById("emptyMsg");
+    const tbody = document.getElementById("tableBody");
+
+    loading.style.display = "none";
+
+    if (data.length === 0) {
+      table.style.display = "none";
+      empty.style.display = "block";
+      return;
+    }
+
+    empty.style.display = "none";
+    table.style.display = "table";
+
+    tbody.innerHTML = data.map(d => `
+      <tr onclick="openModal(${d.id})">
+        <td style="color:#aaa;font-size:12px">#${d.id}</td>
+        <td><strong>${esc(d.name)}</strong></td>
+        <td>${esc(d.phone)}</td>
+        <td><span class="cat-badge">${esc(d.category)}</span></td>
+        <td>${esc(d.city_name || "—")}</td>
+        <td>${badgeHtml(d.ai_call_status)}</td>
+        <td style="color:#888;font-size:12px">${formatDate(d.ai_called_at)}</td>
+      </tr>
+    `).join("");
+  }
+
+  function openModal(id) {
+    const d = allData.find(x => x.id === id);
+    if (!d) return;
+
+    document.getElementById("modalName").textContent = d.name;
+    document.getElementById("modalSub").textContent = d.category + " · " + (d.city_name || "") + (d.state_name ? ", " + d.state_name : "");
+
+    const body = document.getElementById("modalBody");
+    body.innerHTML = `
+      <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value">${esc(d.phone)}</span></div>
+      <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${esc(d.email || "—")}</span></div>
+      <div class="detail-row"><span class="detail-label">Category</span><span class="detail-value">${esc(d.category)}</span></div>
+      <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">${esc((d.city_name || "") + (d.state_name ? ", " + d.state_name : "") || "—")}</span></div>
+      <div class="detail-row"><span class="detail-label">Message</span><span class="detail-value">${esc(d.message || "—")}</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted At</span><span class="detail-value">${formatDate(d.created_at)}</span></div>
+      <div class="detail-row"><span class="detail-label">AI Call Status</span><span class="detail-value">${badgeHtml(d.ai_call_status)}</span></div>
+      <div class="detail-row"><span class="detail-label">Called At</span><span class="detail-value">${formatDate(d.ai_called_at)}</span></div>
+      ${d.ai_call_summary
+        ? `<div class="summary-box"><div class="summary-title">📝 AI Call Summary</div>${esc(d.ai_call_summary)}</div>`
+        : `<div class="no-summary">No call summary available yet.</div>`
+      }
+    `;
+
+    document.getElementById("modalOverlay").classList.add("active");
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById("modalOverlay")) closeModalDirect();
+  }
+  function closeModalDirect() {
+    document.getElementById("modalOverlay").classList.remove("active");
+  }
+
+  function badgeHtml(status) {
+    const labels = {
+      not_called: "Not Called",
+      calling: "Calling...",
+      called: "Called ✓",
+      failed: "Failed",
+      no_answer: "No Answer",
+    };
+    return `<span class="badge ${status || 'not_called'}">${labels[status] || status || "Not Called"}</span>`;
+  }
+
+  function formatDate(dt) {
+    if (!dt) return "—";
+    try { return new Date(dt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }); }
+    catch { return dt; }
+  }
+
+  function esc(str) {
+    if (!str) return "";
+    return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  // Auto refresh every 15 seconds
+  loadData();
+  setInterval(loadData, 15000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Car Inquiry — AutoDesk Motors</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      border-bottom: 1px solid #e5e5e5;
+      padding: 0 40px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-dot { color: #e63946; }
+    .nav-cta {
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* LAYOUT */
+    .page {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+    }
+
+    /* LEFT PANEL */
+    .left {
+      width: 42%;
+      background: #f9f9f9;
+      border-right: 1px solid #e5e5e5;
+      padding: 60px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .left-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff0f1;
+      color: #e63946;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid #ffd0d3;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 28px;
+      width: fit-content;
+    }
+    .left h1 {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #111;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+    .left h1 span { color: #e63946; }
+    .left p {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .perks { display: flex; flex-direction: column; gap: 16px; }
+    .perk {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .perk-icon {
+      width: 36px;
+      height: 36px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .perk-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 2px;
+    }
+    .perk-text span {
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* RIGHT PANEL — FORM */
+    .right {
+      flex: 1;
+      padding: 60px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .form-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 6px;
+    }
+    .form-subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 32px;
+    }
+
+    /* ALERT */
+    .alert {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+    .alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .alert.error   { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
+
+    /* FORM */
+    .form-row { display: flex; gap: 16px; }
+    .form-row .fg { flex: 1; }
+    .fg { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 7px;
+      letter-spacing: 0.2px;
+    }
+    label .req { color: #e63946; }
+    label .opt { color: #bbb; font-weight: 400; }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: #111;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input::placeholder, textarea::placeholder { color: #c0c0c0; }
+    input:focus, select:focus, textarea:focus {
+      border-color: #e63946;
+      box-shadow: 0 0 0 3px rgba(230,57,70,0.08);
+    }
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    textarea { resize: vertical; min-height: 86px; line-height: 1.55; }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: #e63946;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.12s;
+      margin-top: 4px;
+    }
+    .btn:hover  { background: #c1121f; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .secure-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 16px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid #e5e5e5;
+      padding: 16px 40px;
+      font-size: 12px;
+      color: #bbb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer a { color: #bbb; text-decoration: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 860px) {
+      .left { display: none; }
+      .right { padding: 40px 24px; }
+      nav { padding: 0 24px; }
+      footer { padding: 16px 24px; }
+    }
+    @media (max-width: 420px) {
+      .form-row { flex-direction: column; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">AutoDesk <span class="logo-dot">Motors</span></div>
+  <div class="nav-cta">Need help? <strong>1800-000-0000</strong></div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="left-tag">⚡ Instant Callback</div>
+    <h1>Get the Best Deal<br/>on Your <span>Dream Car</span></h1>
+    <p>Fill out the form and our team will call you within seconds with the best offers tailored for you.</p>
+    <div class="perks">
+      <div class="perk">
+        <div class="perk-icon">📞</div>
+        <div class="perk-text">
+          <strong>Instant AI Callback</strong>
+          <span>We call you within seconds of submission</span>
+        </div>
+      </div>
+      <div class="perk">
+        <div class="perk-icon">💰</div>
+        <div class="perk-text">
+          <strong>Best Price Guaranteed</strong>
+          <span>No hidden charges, transparent pricing</span>
+        </div>
+      </div>
+      <div class="perk">
+        <div class="perk-icon">🔧</div>
+        <div class="perk-text">
+          <strong>Expert Assistance</strong>
+          <span>Dedicated advisor for your inquiry</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="form-title">Submit Your Inquiry</div>
+    <div class="form-subtitle">Fields marked <span style="color:#e63946">*</span> are required</div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <form id="inquiryForm" autocomplete="off">
+
+      <div class="form-row">
+        <div class="fg">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="name" placeholder="Rahul Sharma" required/>
+        </div>
+        <div class="fg">
+          <label>Mobile Number <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="10-digit number" maxlength="10" required/>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Email Address <span class="opt">(optional)</span></label>
+        <input type="email" id="email" placeholder="rahul@example.com"/>
+      </div>
+
+      <div class="fg">
+        <label>Inquiry Type <span class="req">*</span></label>
+        <select id="category" required>
+          <option value="" disabled selected>Select a category</option>
+          <option value="New Car Inquiry">🚘 New Car Purchase</option>
+          <option value="Test Drive">🏁 Book a Test Drive</option>
+          <option value="Car Service">🔧 Car Service & Repair</option>
+          <option value="Finance">💳 Finance & Loan</option>
+          <option value="Exchange">🔄 Car Exchange / Trade-in</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="fg">
+          <label>City <span class="req">*</span></label>
+          <input type="text" id="city" placeholder="Nagpur" required/>
+        </div>
+        <div class="fg">
+          <label>State <span class="req">*</span></label>
+          <input type="text" id="state" placeholder="Maharashtra" required/>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Message <span class="opt">(optional)</span></label>
+        <textarea id="message" placeholder="Budget, preferred model, or any specific requirements..."></textarea>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">Request a Callback →</button>
+
+      <div class="secure-note">
+        🔒 Your information is secure and never shared
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 AutoDesk Motors. All rights reserved.</span>
+  <span><a href="#">Privacy Policy</a> · <a href="#">Terms</a></span>
+</footer>
+
+<script>
+  document.getElementById("inquiryForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById("submitBtn");
+    const phone = document.getElementById("phone").value.trim();
+
+    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+      showAlert("Please enter a valid 10-digit mobile number.", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    const payload = {
+      name:       document.getElementById("name").value.trim(),
+      phone,
+      email:      document.getElementById("email").value.trim(),
+      category:   document.getElementById("category").value,
+      city_name:  document.getElementById("city").value.trim(),
+      state_name: document.getElementById("state").value.trim(),
+      message:    document.getElementById("message").value.trim(),
+    };
+
+    try {
+      const resp = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        showAlert("✅ " + data.message, "success");
+        document.getElementById("inquiryForm").reset();
+      } else {
+        showAlert("❌ " + (data.message || "Something went wrong. Please try again."), "error");
+      }
+    } catch {
+      showAlert("❌ Could not connect to server. Please try again later.", "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Request a Callback →";
+    }
+  });
+
+  function showAlert(msg, type) {
+    const el = document.getElementById("alertBox");
+    el.textContent = msg;
+    el.className = "alert " + type;
+    el.style.display = "block";
+    setTimeout(() => el.style.display = "none", 6000);
+  }
+</script>
+
+</body>
+</html>
