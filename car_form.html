@@ -7,239 +7,76 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #ffffff; color: #111; min-height: 100vh; display: flex; flex-direction: column; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #ffffff;
-      color: #111;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* NAV */
-    nav {
-      border-bottom: 1px solid #e5e5e5;
-      padding: 0 40px;
-      height: 58px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      font-size: 16px;
-      font-weight: 700;
-      color: #111;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    nav { border-bottom: 1px solid #e5e5e5; padding: 0 40px; height: 58px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 16px; font-weight: 700; color: #111; display: flex; align-items: center; gap: 8px; }
     .logo-dot { color: #e63946; }
-    .nav-cta {
-      font-size: 13px;
-      color: #555;
-    }
+    .nav-cta { font-size: 13px; color: #555; }
 
-    /* LAYOUT */
-    .page {
-      flex: 1;
-      display: flex;
-      align-items: stretch;
-    }
+    .page { flex: 1; display: flex; align-items: stretch; }
 
-    /* LEFT PANEL */
-    .left {
-      width: 42%;
-      background: #f9f9f9;
-      border-right: 1px solid #e5e5e5;
-      padding: 60px 48px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .left-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #fff0f1;
-      color: #e63946;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 5px 12px;
-      border-radius: 100px;
-      border: 1px solid #ffd0d3;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 28px;
-      width: fit-content;
-    }
-    .left h1 {
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1.2;
-      color: #111;
-      margin-bottom: 16px;
-      letter-spacing: -0.5px;
-    }
+    .left { width: 42%; background: #f9f9f9; border-right: 1px solid #e5e5e5; padding: 60px 48px; display: flex; flex-direction: column; justify-content: center; }
+    .left-tag { display: inline-flex; align-items: center; gap: 6px; background: #fff0f1; color: #e63946; font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 100px; border: 1px solid #ffd0d3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 28px; width: fit-content; }
+    .left h1 { font-size: 30px; font-weight: 700; line-height: 1.2; color: #111; margin-bottom: 14px; letter-spacing: -0.5px; }
     .left h1 span { color: #e63946; }
-    .left p {
-      font-size: 14px;
-      color: #666;
-      line-height: 1.7;
-      margin-bottom: 40px;
-    }
-    .perks { display: flex; flex-direction: column; gap: 16px; }
-    .perk {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    .perk-icon {
-      width: 36px;
-      height: 36px;
-      background: #fff;
-      border: 1px solid #e5e5e5;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .perk-text strong {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #111;
-      margin-bottom: 2px;
-    }
-    .perk-text span {
-      font-size: 12px;
-      color: #888;
-    }
+    .left p { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 36px; }
+    .perks { display: flex; flex-direction: column; gap: 14px; }
+    .perk { display: flex; align-items: flex-start; gap: 12px; }
+    .perk-icon { width: 36px; height: 36px; background: #fff; border: 1px solid #e5e5e5; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .perk-text strong { display: block; font-size: 13px; font-weight: 600; color: #111; margin-bottom: 2px; }
+    .perk-text span { font-size: 12px; color: #888; }
 
-    /* RIGHT PANEL — FORM */
-    .right {
-      flex: 1;
-      padding: 60px 48px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .form-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #111;
-      margin-bottom: 6px;
-    }
-    .form-subtitle {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 32px;
-    }
+    .right { flex: 1; padding: 48px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+    .form-title { font-size: 20px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .form-subtitle { font-size: 13px; color: #888; margin-bottom: 28px; }
 
-    /* ALERT */
-    .alert {
-      display: none;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 24px;
-    }
+    .alert { display: none; padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; margin-bottom: 22px; }
     .alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
     .alert.error   { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
 
-    /* FORM */
-    .form-row { display: flex; gap: 16px; }
-    .form-row .fg { flex: 1; }
-    .fg { margin-bottom: 20px; }
+    .section-label { font-size: 11px; font-weight: 700; color: #e63946; text-transform: uppercase; letter-spacing: 0.8px; margin: 20px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
 
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #444;
-      margin-bottom: 7px;
-      letter-spacing: 0.2px;
-    }
+    .form-row { display: flex; gap: 14px; }
+    .form-row .fg { flex: 1; }
+    .fg { margin-bottom: 16px; }
+
+    label { display: block; font-size: 12px; font-weight: 600; color: #444; margin-bottom: 6px; }
     label .req { color: #e63946; }
     label .opt { color: #bbb; font-weight: 400; }
 
     input, select, textarea {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: 'Inter', sans-serif;
-      color: #111;
-      background: #fff;
-      outline: none;
-      transition: border-color 0.18s, box-shadow 0.18s;
-      -webkit-appearance: none;
-      appearance: none;
+      width: 100%; padding: 10px 13px; border: 1.5px solid #e0e0e0; border-radius: 8px;
+      font-size: 14px; font-family: 'Inter', sans-serif; color: #111; background: #fff;
+      outline: none; transition: border-color 0.18s, box-shadow 0.18s;
+      -webkit-appearance: none; appearance: none;
     }
     input::placeholder, textarea::placeholder { color: #c0c0c0; }
-    input:focus, select:focus, textarea:focus {
-      border-color: #e63946;
-      box-shadow: 0 0 0 3px rgba(230,57,70,0.08);
-    }
-    select {
-      cursor: pointer;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 36px;
-    }
-    textarea { resize: vertical; min-height: 86px; line-height: 1.55; }
+    input:focus, select:focus, textarea:focus { border-color: #e63946; box-shadow: 0 0 0 3px rgba(230,57,70,0.08); }
+    select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 34px; }
+    textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
 
-    .btn {
-      width: 100%;
-      padding: 13px;
-      background: #e63946;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      font-family: 'Inter', sans-serif;
-      cursor: pointer;
-      transition: background 0.18s, transform 0.12s;
-      margin-top: 4px;
-    }
-    .btn:hover  { background: #c1121f; transform: translateY(-1px); }
+    /* Toggle buttons for Test Drive */
+    .toggle-group { display: flex; gap: 10px; }
+    .toggle-btn { flex: 1; padding: 10px; border: 1.5px solid #e0e0e0; border-radius: 8px; background: #fff; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: #666; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .toggle-btn:hover { border-color: #e63946; color: #e63946; }
+    .toggle-btn.active { border-color: #e63946; background: #fff0f1; color: #e63946; font-weight: 600; }
+
+    .btn { width: 100%; padding: 13px; background: #e63946; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.18s, transform 0.12s; margin-top: 6px; }
+    .btn:hover { background: #c1121f; transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
-    .secure-note {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 12px;
-      color: #aaa;
-      margin-top: 16px;
-    }
+    .secure-note { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: #aaa; margin-top: 14px; }
 
-    /* FOOTER */
-    footer {
-      border-top: 1px solid #e5e5e5;
-      padding: 16px 40px;
-      font-size: 12px;
-      color: #bbb;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    footer { border-top: 1px solid #e5e5e5; padding: 14px 40px; font-size: 12px; color: #bbb; display: flex; justify-content: space-between; align-items: center; }
     footer a { color: #bbb; text-decoration: none; }
 
-    /* RESPONSIVE */
     @media (max-width: 860px) {
       .left { display: none; }
-      .right { padding: 40px 24px; }
-      nav { padding: 0 24px; }
-      footer { padding: 16px 24px; }
+      .right { padding: 32px 20px; }
+      nav { padding: 0 20px; }
+      footer { padding: 14px 20px; }
     }
     @media (max-width: 420px) {
       .form-row { flex-direction: column; gap: 0; }
@@ -248,58 +85,50 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="logo">AutoDesk <span class="logo-dot">Motors</span></div>
   <div class="nav-cta">Need help? <strong>1800-000-0000</strong></div>
 </nav>
 
-<!-- PAGE -->
 <div class="page">
-
-  <!-- LEFT -->
   <div class="left">
-    <div class="left-tag">⚡ Instant Callback</div>
-    <h1>Get the Best Deal<br/>on Your <span>Dream Car</span></h1>
-    <p>Fill out the form and our team will call you within seconds with the best offers tailored for you.</p>
+    <div class="left-tag">⚡ Instant AI Callback</div>
+    <h1>Find Your <span>Perfect Car</span><br/>We Call You Instantly</h1>
+    <p>Submit your inquiry and our AI-powered team will call you within seconds with the best offers tailored for you.</p>
     <div class="perks">
       <div class="perk">
         <div class="perk-icon">📞</div>
-        <div class="perk-text">
-          <strong>Instant AI Callback</strong>
-          <span>We call you within seconds of submission</span>
-        </div>
+        <div class="perk-text"><strong>Instant Callback</strong><span>We call you within seconds of submission</span></div>
+      </div>
+      <div class="perk">
+        <div class="perk-icon">🚗</div>
+        <div class="perk-text"><strong>1000+ Car Models</strong><span>Widest selection across all brands</span></div>
       </div>
       <div class="perk">
         <div class="perk-icon">💰</div>
-        <div class="perk-text">
-          <strong>Best Price Guaranteed</strong>
-          <span>No hidden charges, transparent pricing</span>
-        </div>
+        <div class="perk-text"><strong>Best Price Guaranteed</strong><span>No hidden charges, transparent pricing</span></div>
       </div>
       <div class="perk">
-        <div class="perk-icon">🔧</div>
-        <div class="perk-text">
-          <strong>Expert Assistance</strong>
-          <span>Dedicated advisor for your inquiry</span>
-        </div>
+        <div class="perk-icon">🏁</div>
+        <div class="perk-text"><strong>Free Test Drive</strong><span>At home or at showroom, your choice</span></div>
       </div>
     </div>
   </div>
 
-  <!-- RIGHT -->
   <div class="right">
     <div class="form-title">Submit Your Inquiry</div>
-    <div class="form-subtitle">Fields marked <span style="color:#e63946">*</span> are required</div>
+    <div class="form-subtitle">Fields marked <span style="color:#e63946">*</span> are required · We'll call you right away</div>
 
     <div id="alertBox" class="alert"></div>
 
     <form id="inquiryForm" autocomplete="off">
 
+      <div class="section-label">Personal Details</div>
+
       <div class="form-row">
         <div class="fg">
           <label>Full Name <span class="req">*</span></label>
-          <input type="text" id="name" placeholder="Rahul Sharma" required/>
+          <input type="text" id="name" placeholder="e.g. Rahul Sharma" required/>
         </div>
         <div class="fg">
           <label>Mobile Number <span class="req">*</span></label>
@@ -307,64 +136,93 @@
         </div>
       </div>
 
-      <div class="fg">
-        <label>Email Address <span class="opt">(optional)</span></label>
-        <input type="email" id="email" placeholder="rahul@example.com"/>
-      </div>
+      <div class="section-label">Car Preferences</div>
 
       <div class="fg">
-        <label>Inquiry Type <span class="req">*</span></label>
-        <select id="category" required>
-          <option value="" disabled selected>Select a category</option>
-          <option value="New Car Inquiry">🚘 New Car Purchase</option>
-          <option value="Test Drive">🏁 Book a Test Drive</option>
-          <option value="Car Service">🔧 Car Service & Repair</option>
-          <option value="Finance">💳 Finance & Loan</option>
-          <option value="Exchange">🔄 Car Exchange / Trade-in</option>
-        </select>
+        <label>Interested Car Model <span class="req">*</span></label>
+        <input type="text" id="car_model" placeholder="e.g. Maruti Swift, Hyundai Creta, Tata Nexon" required/>
       </div>
 
       <div class="form-row">
         <div class="fg">
-          <label>City <span class="req">*</span></label>
-          <input type="text" id="city" placeholder="Nagpur" required/>
+          <label>Fuel Type <span class="req">*</span></label>
+          <select id="fuel_type" required>
+            <option value="" disabled selected>Select fuel type</option>
+            <option value="Petrol">⛽ Petrol</option>
+            <option value="Diesel">🛢️ Diesel</option>
+            <option value="CNG">🌿 CNG</option>
+            <option value="Electric">⚡ Electric</option>
+            <option value="Hybrid">🔋 Hybrid</option>
+            <option value="Not Sure">🤔 Not Sure</option>
+          </select>
         </div>
         <div class="fg">
-          <label>State <span class="req">*</span></label>
-          <input type="text" id="state" placeholder="Maharashtra" required/>
+          <label>Budget Range <span class="req">*</span></label>
+          <select id="budget" required>
+            <option value="" disabled selected>Select budget</option>
+            <option value="Under 5 Lakh">Under ₹5 Lakh</option>
+            <option value="5-10 Lakh">₹5 – ₹10 Lakh</option>
+            <option value="10-15 Lakh">₹10 – ₹15 Lakh</option>
+            <option value="15-20 Lakh">₹15 – ₹20 Lakh</option>
+            <option value="20-30 Lakh">₹20 – ₹30 Lakh</option>
+            <option value="Above 30 Lakh">Above ₹30 Lakh</option>
+          </select>
         </div>
       </div>
 
       <div class="fg">
-        <label>Message <span class="opt">(optional)</span></label>
-        <textarea id="message" placeholder="Budget, preferred model, or any specific requirements..."></textarea>
+        <label>Buying Timeline <span class="req">*</span></label>
+        <select id="timeline" required>
+          <option value="" disabled selected>When are you planning to buy?</option>
+          <option value="Within 1 week">Within 1 week</option>
+          <option value="Within 1 month">Within 1 month</option>
+          <option value="1-3 months">1 – 3 months</option>
+          <option value="3-6 months">3 – 6 months</option>
+          <option value="Just exploring">Just exploring</option>
+        </select>
       </div>
 
-      <button type="submit" class="btn" id="submitBtn">Request a Callback →</button>
-
-      <div class="secure-note">
-        🔒 Your information is secure and never shared
+      <div class="fg">
+        <label>Test Drive Required? <span class="req">*</span></label>
+        <div class="toggle-group">
+          <button type="button" class="toggle-btn" id="td-yes" onclick="setTestDrive('Yes')">✅ Yes, I want a test drive</button>
+          <button type="button" class="toggle-btn" id="td-no" onclick="setTestDrive('No')">❌ No, not required</button>
+        </div>
+        <input type="hidden" id="test_drive" required/>
       </div>
+
+      <button type="submit" class="btn" id="submitBtn">Request Instant Callback →</button>
+      <div class="secure-note">🔒 Your information is 100% secure and never shared</div>
 
     </form>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <span>© 2026 AutoDesk Motors. All rights reserved.</span>
   <span><a href="#">Privacy Policy</a> · <a href="#">Terms</a></span>
 </footer>
 
 <script>
+  let testDriveValue = "";
+
+  function setTestDrive(val) {
+    testDriveValue = val;
+    document.getElementById("test_drive").value = val;
+    document.getElementById("td-yes").classList.toggle("active", val === "Yes");
+    document.getElementById("td-no").classList.toggle("active", val === "No");
+  }
+
   document.getElementById("inquiryForm").addEventListener("submit", async function(e) {
     e.preventDefault();
     const btn = document.getElementById("submitBtn");
-    const phone = document.getElementById("phone").value.trim();
 
+    const phone = document.getElementById("phone").value.trim();
     if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-      showAlert("Please enter a valid 10-digit mobile number.", "error");
-      return;
+      showAlert("Please enter a valid 10-digit mobile number.", "error"); return;
+    }
+    if (!testDriveValue) {
+      showAlert("Please select whether you need a test drive.", "error"); return;
     }
 
     btn.disabled = true;
@@ -373,11 +231,13 @@
     const payload = {
       name:       document.getElementById("name").value.trim(),
       phone,
-      email:      document.getElementById("email").value.trim(),
-      category:   document.getElementById("category").value,
-      city_name:  document.getElementById("city").value.trim(),
-      state_name: document.getElementById("state").value.trim(),
-      message:    document.getElementById("message").value.trim(),
+      category:   "New Car Inquiry",
+      car_model:  document.getElementById("car_model").value.trim(),
+      fuel_type:  document.getElementById("fuel_type").value,
+      budget:     document.getElementById("budget").value,
+      timeline:   document.getElementById("timeline").value,
+      test_drive: testDriveValue,
+      message:    `Car: ${document.getElementById("car_model").value.trim()}, Fuel: ${document.getElementById("fuel_type").value}, Budget: ${document.getElementById("budget").value}, Timeline: ${document.getElementById("timeline").value}, Test Drive: ${testDriveValue}`,
     };
 
     try {
@@ -390,6 +250,9 @@
       if (data.success) {
         showAlert("✅ " + data.message, "success");
         document.getElementById("inquiryForm").reset();
+        testDriveValue = "";
+        document.getElementById("td-yes").classList.remove("active");
+        document.getElementById("td-no").classList.remove("active");
       } else {
         showAlert("❌ " + (data.message || "Something went wrong. Please try again."), "error");
       }
@@ -397,7 +260,7 @@
       showAlert("❌ Could not connect to server. Please try again later.", "error");
     } finally {
       btn.disabled = false;
-      btn.textContent = "Request a Callback →";
+      btn.textContent = "Request Instant Callback →";
     }
   });
 
@@ -406,9 +269,9 @@
     el.textContent = msg;
     el.className = "alert " + type;
     el.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setTimeout(() => el.style.display = "none", 6000);
   }
 </script>
-
 </body>
 </html>

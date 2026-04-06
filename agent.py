@@ -393,15 +393,21 @@ async def entrypoint(ctx: agents.JobContext):
     lead_greeting = None
     if lead_id:
         logger.info(f"Lead call detected: ID={lead_id}, Name={config_dict.get('lead_name')}, Category={config_dict.get('lead_category')}")
-        prompt_data = build_lead_prompt(
-            config_dict.get("lead_category", ""),
-            config_dict.get("lead_name", ""),
-            config_dict.get("lead_city", ""),
-            config_dict.get("lead_state", ""),
-            config_dict.get("lead_message", ""),
-        )
-        lead_system_prompt = prompt_data["system_prompt"]
-        lead_greeting = prompt_data["greeting"]
+        # If caller (e.g. car_backend) already sent a fully built system_prompt, use it directly
+        if config_dict.get("system_prompt"):
+            lead_system_prompt = config_dict["system_prompt"]
+            lead_greeting = config_dict.get("greeting", "")
+            logger.info("Using system_prompt from metadata.")
+        else:
+            prompt_data = build_lead_prompt(
+                config_dict.get("lead_category", ""),
+                config_dict.get("lead_name", ""),
+                config_dict.get("lead_city", ""),
+                config_dict.get("lead_state", ""),
+                config_dict.get("lead_message", ""),
+            )
+            lead_system_prompt = prompt_data["system_prompt"]
+            lead_greeting = prompt_data["greeting"]
 
     # Initialize function context
     fnc_ctx = TransferFunctions(ctx, phone_number)
