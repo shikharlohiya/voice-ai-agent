@@ -196,7 +196,7 @@ def _build_tts(config_provider: str = None, config_voice: str = None):
         logger.info(f"Using Sarvam TTS (Voice: {config_voice})")
         model = os.getenv("SARVAM_TTS_MODEL", config.SARVAM_MODEL)
         # Use dynamic voice or env var or default
-        voice = config_voice or os.getenv("SARVAM_VOICE", "anushka")
+        voice = config_voice or os.getenv("SARVAM_VOICE", config.DEFAULT_TTS_VOICE)
         language = os.getenv("SARVAM_LANGUAGE", config.SARVAM_LANGUAGE)
         return sarvam.TTS(model=model, speaker=voice, target_language_code=language)
 

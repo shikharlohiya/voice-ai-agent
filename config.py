@@ -42,10 +42,10 @@ STT_LANGUAGE = "hi"   # Hindi primary — also picks up English/Hinglish words
 # --- 3. TEXT-TO-SPEECH (TTS) SETTINGS ---
 # Choose your voice provider: "openai", "sarvam" (Indian voices), or "cartesia" (Ultra-fast)
 DEFAULT_TTS_PROVIDER = "sarvam"
-DEFAULT_TTS_VOICE = "anushka"       # Sarvam: anushka (female), aravind (male)
+DEFAULT_TTS_VOICE = "simran"        # Sarvam v3 female voices: simran, ishita, neha, pooja, kavya, ritu
 
 # Sarvam AI Specifics (for Indian Context)
-SARVAM_MODEL = "bulbul:v2"
+SARVAM_MODEL = "bulbul:v3"
 SARVAM_LANGUAGE = "hi-IN" # Hindi
 
 # Cartesia Specifics
