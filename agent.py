@@ -198,7 +198,7 @@ def _build_tts(config_provider: str = None, config_voice: str = None):
         # Use dynamic voice or env var or default
         voice = config_voice or os.getenv("SARVAM_VOICE", "anushka")
         language = os.getenv("SARVAM_LANGUAGE", config.SARVAM_LANGUAGE)
-        return sarvam.TTS(model=model, speaker=voice, target_language_code=language, encoding="wav")
+        return sarvam.TTS(model=model, speaker=voice, target_language_code=language)
 
     if provider == "deepgram":
         logger.info("Using Deepgram TTS")
