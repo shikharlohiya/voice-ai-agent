@@ -191,6 +191,32 @@
         <input type="hidden" id="test_drive" required/>
       </div>
 
+      <div class="section-label">Call Mode</div>
+      <div class="fg">
+        <label>How would you like to be contacted? <span class="req">*</span></label>
+        <div class="toggle-group">
+          <button type="button" class="toggle-btn active" id="mode-ai" onclick="setCallMode('ai')">🤖 AI Agent Call</button>
+          <button type="button" class="toggle-btn" id="mode-trans" onclick="setCallMode('translation')">🌐 Live Agent (Translation)</button>
+        </div>
+        <input type="hidden" id="call_mode" value="ai"/>
+      </div>
+
+      <div class="fg" id="langRow" style="display:none;">
+        <label>Customer Language <span class="req">*</span></label>
+        <select id="cust_language">
+          <option value="english">🇬🇧 English</option>
+          <option value="tamil">🇮🇳 Tamil (தமிழ்)</option>
+          <option value="telugu">🇮🇳 Telugu (తెలుగు)</option>
+          <option value="kannada">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+          <option value="bengali">🇮🇳 Bengali (বাংলা)</option>
+          <option value="malayalam">🇮🇳 Malayalam (മലയാളം)</option>
+          <option value="marathi">🇮🇳 Marathi (मराठी)</option>
+          <option value="gujarati">🇮🇳 Gujarati (ગુજરાતી)</option>
+          <option value="punjabi">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
+          <option value="odia">🇮🇳 Odia (ଓଡ଼ିଆ)</option>
+        </select>
+      </div>
+
       <button type="submit" class="btn" id="submitBtn">Request Instant Callback →</button>
       <div class="secure-note">🔒 Your information is 100% secure and never shared</div>
 
@@ -205,6 +231,19 @@
 
 <script>
   let testDriveValue = "";
+  let callModeValue  = "ai";
+
+  function setCallMode(val) {
+    callModeValue = val;
+    document.getElementById("call_mode").value = val;
+    document.getElementById("mode-ai").classList.toggle("active", val === "ai");
+    document.getElementById("mode-trans").classList.toggle("active", val === "translation");
+    document.getElementById("langRow").style.display = val === "translation" ? "block" : "none";
+    const btn = document.getElementById("submitBtn");
+    btn.textContent = val === "translation"
+      ? "Connect Live Agent →"
+      : "Request Instant Callback →";
+  }
 
   function setTestDrive(val) {
     testDriveValue = val;
@@ -237,6 +276,8 @@
       budget:     document.getElementById("budget").value,
       timeline:   document.getElementById("timeline").value,
       test_drive: testDriveValue,
+      call_mode:  callModeValue,
+      cust_language: document.getElementById("cust_language").value,
       message:    `Car: ${document.getElementById("car_model").value.trim()}, Fuel: ${document.getElementById("fuel_type").value}, Budget: ${document.getElementById("budget").value}, Timeline: ${document.getElementById("timeline").value}, Test Drive: ${testDriveValue}`,
     };
 

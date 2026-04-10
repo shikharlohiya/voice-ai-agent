@@ -35,6 +35,9 @@ SIP_TRUNK_ID = os.getenv("SIP_TRUNK_ID")
 
 SELF_BASE_URL = os.getenv("CAR_BACKEND_URL", "http://localhost:5010")
 
+# Operator phone number — receives the call in Live Translation mode
+OPERATOR_NUMBER = os.getenv("OPERATOR_NUMBER", "+918839699199")
+
 # --- CAR AGENT PROMPT (Hindi) ---
 CAR_AGENT_PROMPT = """आप प्रिया हैं, AutoDesk Motors की एक professional car sales executive। आप एक customer को call कर रही हैं जिसने website पर car inquiry submit की है।
 
@@ -280,6 +283,106 @@ def trigger_call(lead: dict):
     loop.close()
 
 
+# ─── TRANSLATION CALL DISPATCH ────────────────────────────────────────────────
+
+async def dispatch_translation_call_async(lead: dict):
+    """
+    Live Translation mode:
+    1. Create two LiveKit rooms (op_room + cust_room)
+    2. Dial operator phone (OPERATOR_NUMBER) into op_room via SIP
+    3. Dial customer phone into cust_room via SIP
+    4. Launch translation_bridge.py subprocess to bridge both rooms
+    """
+    if not (LIVEKIT_URL and LIVEKIT_API_KEY and LIVEKIT_API_SECRET):
+        logger.error("[TRANS] LiveKit credentials missing in .env")
+        return
+
+    phone = lead.get("phone", "")
+    if not phone.startswith("+"):
+        phone = f"+91{phone}"
+    if phone.startswith("+910"):
+        phone = "+91" + phone[4:]
+
+    lead_id  = lead["id"]
+    uid      = random.randint(1000, 9999)
+    op_room  = f"trans-op-{lead_id}-{uid}"
+    cust_room = f"trans-cust-{lead_id}-{uid}"
+
+    lk_client = api.LiveKitAPI(url=LIVEKIT_URL, api_key=LIVEKIT_API_KEY, api_secret=LIVEKIT_API_SECRET)
+
+    try:
+        # Mark as calling
+        conn = get_db()
+        conn.execute(
+            "UPDATE inquiries SET ai_call_status='calling', ai_called_at=? WHERE id=?",
+            (datetime.now().isoformat(), lead_id),
+        )
+        conn.commit()
+        conn.close()
+
+        # Dial OPERATOR into op_room
+        await lk_client.sip.create_sip_participant(
+            api.CreateSIPParticipantRequest(
+                room_name=op_room,
+                sip_trunk_id=SIP_TRUNK_ID,
+                sip_call_to=OPERATOR_NUMBER,
+                participant_identity="operator",
+                participant_name=f"Live Call — {lead.get('name', '')}",
+                wait_until_answered=False,
+            )
+        )
+        logger.info(f"[TRANS] Calling operator {OPERATOR_NUMBER} → room={op_room}")
+
+        # Dial CUSTOMER into cust_room
+        await lk_client.sip.create_sip_participant(
+            api.CreateSIPParticipantRequest(
+                room_name=cust_room,
+                sip_trunk_id=SIP_TRUNK_ID,
+                sip_call_to=phone,
+                participant_identity="customer",
+                participant_name=lead.get("name", "Customer"),
+                wait_until_answered=False,
+            )
+        )
+        logger.info(f"[TRANS] Calling customer {phone} → room={cust_room}")
+
+        # Launch translation bridge as a subprocess
+        import subprocess, sys as _sys
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "call_logs")
+        os.makedirs(log_dir, exist_ok=True)
+        log_path = os.path.join(log_dir, f"trans_{lead_id}_{uid}.log")
+
+        cust_language = lead.get("cust_language", "english")
+        logger.info(f"[TRANS] Launching bridge with language: {cust_language}")
+        proc = subprocess.Popen(
+            [_sys.executable, "translation_bridge.py", op_room, cust_room, cust_language],
+            cwd=os.path.dirname(os.path.abspath(__file__)),
+            stdout=open(log_path, "w", encoding="utf-8"),
+            stderr=subprocess.STDOUT,
+        )
+        logger.info(
+            f"[TRANS] Bridge started PID={proc.pid} | "
+            f"op={op_room} | cust={cust_room} | log={log_path}"
+        )
+
+    except Exception as e:
+        logger.error(f"[TRANS ERROR] Lead {lead_id}: {e}")
+        conn = get_db()
+        conn.execute("UPDATE inquiries SET ai_call_status='failed' WHERE id=?", (lead_id,))
+        conn.commit()
+        conn.close()
+    finally:
+        await lk_client.aclose()
+
+
+def trigger_translation_call(lead: dict):
+    """Run async translation dispatch in a background thread."""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(dispatch_translation_call_async(lead))
+    loop.close()
+
+
 # ─── ROUTES ──────────────────────────────────────────────────────────────────
 
 @app.route("/")
@@ -329,14 +432,23 @@ def submit_inquiry():
     lead = dict(conn.execute("SELECT * FROM inquiries WHERE id=?", (new_id,)).fetchone())
     conn.close()
 
-    logger.info(f"[NEW INQUIRY] ID={new_id} | {name} | {phone} | {data.get('category')}")
+    logger.info(f"[NEW INQUIRY] ID={new_id} | {name} | {phone} | {data.get('category')} | mode={data.get('call_mode', 'ai')}")
 
     # Trigger call immediately in background thread
     import threading
-    t = threading.Thread(target=trigger_call, args=(lead,), daemon=True)
+    call_mode = data.get("call_mode", "ai")
+    if call_mode == "translation":
+        cust_lang = data.get("cust_language", "english")
+        lead["cust_language"] = cust_lang
+        logger.info(f"[TRANS] Customer language from form: {cust_lang}")
+        t = threading.Thread(target=trigger_translation_call, args=(lead,), daemon=True)
+        msg = "आपकी inquiry दर्ज हो गई! हम आपको अभी live translation call कर रहे हैं। 📞"
+    else:
+        t = threading.Thread(target=trigger_call, args=(lead,), daemon=True)
+        msg = "आपकी inquiry दर्ज हो गई! हम आपको अभी call कर रहे हैं। 📞"
     t.start()
 
-    return jsonify({"success": True, "message": "आपकी inquiry दर्ज हो गई! हम आपको अभी call कर रहे हैं। 📞"})
+    return jsonify({"success": True, "message": msg})
 
 
 @app.route("/api/inquiry/<int:inquiry_id>/call-update", methods=["PUT"])
